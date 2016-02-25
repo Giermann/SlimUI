@@ -1,5 +1,5 @@
 /**
- *      SlimUI 1.0.1
+ *      SlimUI 1.0.2
  *  https://github.com/hobbyquaker/SlimUI
  *
  *  a very lightweight framework for CCU.IO WebUIs - made for old Browsers and slow Clients
@@ -70,6 +70,8 @@
                         digits: parseInt(elem.getAttribute("data-digits"), 10),
                         timestamp: elem.getAttribute("data-timestamp"),
                         css: elem.getAttribute("data-class"),
+                        style: elem.getAttribute("data-style"),
+                        relmax: elem.getAttribute("data-relative-max"),
                         name: elem.nodeName,
                         type: elem.type
                     };
@@ -236,6 +238,15 @@
                         val = val.toString().replace(/\./, "_");
                         var classes = elem.className.replace(new RegExp("(?:^|[ ]*)"+elemObj.css+"-[0-9a-zA-Z_-]+(?!\S)", "g"), "");
                         elem.className = classes += " "+elemObj.css+"-"+val;
+                    } else if (elemObj.style) {
+                        if (elemObj.relmax) {
+                            val = (val > elemObj.relmax) ? "100%" :
+                                (100 * parseFloat(val) / parseFloat(elemObj.relmax)).toFixed(2) + "%";
+                        }
+                        if (elem.style[elemObj.style]) {
+                            elem.style[elemObj.style] = val;
+                            console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
+                        }
                     } else {
                         if (!isNaN(elemObj.digits)) {
                             val = parseFloat(val).toFixed(elemObj.digits);
