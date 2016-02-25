@@ -245,7 +245,7 @@
                         }
                         if (elem.style[elemObj.style]) {
                             elem.style[elemObj.style] = val;
-                            console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
+                            //console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
                         }
                     } else {
                         if (!isNaN(elemObj.digits)) {
