@@ -249,8 +249,8 @@
                             //console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
                         }
                     } else {
-                        if (!isNaN(elemObj.digits) || !isNan(elemObj.factor)) {
-                            val = parseFloat(val * (isNan(elemObj.factor) ? 1.0 : elemObj.factor)).toFixed(isNan(elemObj.digits) ? 0 : elemObj.digits);
+                        if (!isNaN(elemObj.digits) || !isNaN(elemObj.factor)) {
+                            val = parseFloat(val * (isNaN(elemObj.factor) ? 1.0 : elemObj.factor)).toFixed(isNaN(elemObj.digits) ? 0 : elemObj.digits);
                         } else {
                             // SG, 16.11.2015 - support substrings
                             if (!isNaN(parseInt(elemObj.substr[0]))) {
