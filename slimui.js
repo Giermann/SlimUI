@@ -1,5 +1,5 @@
 /**
- *      SlimUI 1.0.2
+ *      SlimUI 1.0.3
  *  https://github.com/hobbyquaker/SlimUI
  *
  *  a very lightweight framework for CCU.IO WebUIs - made for old Browsers and slow Clients
@@ -68,6 +68,7 @@
                         val: elem.getAttribute("data-val"),
                         substr: (elem.getAttribute("data-substr") || "").split(","),
                         digits: parseInt(elem.getAttribute("data-digits"), 10),
+                        factor: parseFloat(elem.getAttribute("data-factor")),
                         timestamp: elem.getAttribute("data-timestamp"),
                         css: elem.getAttribute("data-class"),
                         style: elem.getAttribute("data-style"),
@@ -248,8 +249,8 @@
                             //console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
                         }
                     } else {
-                        if (!isNaN(elemObj.digits)) {
-                            val = parseFloat(val).toFixed(elemObj.digits);
+                        if (!isNaN(elemObj.digits) || !isNan(elemObj.factor)) {
+                            val = parseFloat(val * (isNan(elemObj.factor) ? 1.0 : elemObj.factor)).toFixed(isNan(elemObj.digits) ? 0 : elemObj.digits);
                         } else {
                             // SG, 16.11.2015 - support substrings
                             if (!isNaN(parseInt(elemObj.substr[0]))) {
