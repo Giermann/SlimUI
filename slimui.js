@@ -211,11 +211,21 @@
             switch (elemObj.name) {
                 case "SELECT":
                     var options = elem.getElementsByTagName("OPTION");
+                    var otherOption = -1;
                     for (var i = 0, l = options.length; i < l; i++) {
                         if (options[i].value == val) {
                             elem.selectedIndex = i;
+                            otherOption = -1;
                             break;
                         }
+                        if (options[i].id == "other") {
+                            otherOption = i;
+                        }
+                    }
+                    if (otherOption >= 0) {
+                        options[otherOption].innerHTML = "( " + val + " )";
+                        options[otherOption].value = val;
+                        elem.selectedIndex = otherOption;
                     }
                     break;
                 case "INPUT":
@@ -244,15 +254,13 @@
                             val = (val > elemObj.relmax) ? "100%" :
                                 (100 * parseFloat(val) / parseFloat(elemObj.relmax)).toFixed(2) + "%";
                         }
-                        if (elem.style[elemObj.style]) {
-                            elem.style[elemObj.style] = val;
-                            //console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
-                        }
+                        elem.style[elemObj.style] = val;
+                        //console.log("changed style '" + elemObj.style + "' from '" + elem.style[elemObj.style] + "' to '" + val + "'");
                     } else {
                         if (!isNaN(elemObj.digits) || !isNaN(elemObj.factor)) {
                             val = parseFloat(val * (isNaN(elemObj.factor) ? 1.0 : elemObj.factor)).toFixed(isNaN(elemObj.digits) ? 0 : elemObj.digits);
                         } else {
-                            // SG, 16.11.2015 - support substrings
+                            // extract requested substring
                             if (!isNaN(parseInt(elemObj.substr[0]))) {
                                 val = val.substr(parseInt(elemObj.substr[0]));
                             }
