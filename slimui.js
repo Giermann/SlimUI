@@ -214,7 +214,7 @@
                     var otherOption = -1;
                     for (var i = 0, l = options.length; i < l; i++) {
                         if (options[i].value == val) {
-                            elem.selectedIndex = i;
+                            if (elem.selectedIndex != i) elem.selectedIndex = i;
                             otherOption = -1;
                             break;
                         }
