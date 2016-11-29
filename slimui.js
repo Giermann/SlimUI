@@ -223,9 +223,11 @@
                         }
                     }
                     if (otherOption >= 0) {
-                        options[otherOption].innerHTML = "( " + val + " )";
-                        options[otherOption].value = val;
-                        elem.selectedIndex = otherOption;
+                        if (options[otherOption].value != val) {
+                            options[otherOption].innerHTML = "( " + val + " )";
+                            options[otherOption].value = val;
+                        }
+                        if (elem.selectedIndex != otherOption) elem.selectedIndex = otherOption;
                     }
                     break;
                 case "INPUT":
