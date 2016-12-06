@@ -253,7 +253,7 @@
                         elem.className = classes += " "+elemObj.css+"-"+val;
                     } else if (elemObj.style) {
                         if (elemObj.relmax) {
-                            val = (val > elemObj.relmax) ? "100%" :
+                            val = (parseFloat(val) > parseFloat(elemObj.relmax)) ? "100%" :
                                 (100 * parseFloat(val) / parseFloat(elemObj.relmax)).toFixed(2) + "%";
                         }
                         elem.style[elemObj.style] = val;
