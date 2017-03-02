@@ -17,10 +17,6 @@
     var SlimUI = function() {
         this.init();
         this.pollValues();
-        var that = this;
-        setInterval(function () {
-            that.pollValues();
-        }, 3000);
     };
 
     SlimUI.prototype = {
@@ -29,7 +25,7 @@
          */
         dps: [],
         /**
-         *  Array aller Elemente die mit einem Datenpunkt verknüpft sind
+         *  Array aller Elemente die mit einem Datenpunkt verknuepft sind
          */
         dpElems: [],
         /**
@@ -39,10 +35,10 @@
             this.getElements(document);
         },
         /**
-         *  durchsucht das DOM nach Elementen mit dem Attribut data-dp, füllt die Arrays dps und dpElems
+         *  durchsucht das DOM nach Elementen mit dem Attribut data-dp, fuellt die Arrays dps und dpElems
          *
          * @param start
-         *  DOM Objekt unter welchem Elemente gesucht werden - üblicherweise: document
+         *  DOM Objekt unter welchem Elemente gesucht werden - ueblicherweise: document
          */
         getElements: function (start) {
             var elems = start.getElementsByTagName('*');
@@ -52,15 +48,15 @@
                 if (elem.getAttribute("data-dp")) {
 
                     /**
-                     * id Attribut hinzufügen falls nötig
+                     * id Attribut hinzufuegen falls noetig
                      */
                     if (!elem.getAttribute("id")) {
                         elem.setAttribute("id", "slim"+count++);
                     }
 
                     /**
-                     *  Objekt das alle relevanten Informationen zu einem Element enthält.
-                     *  Wird dem Array dpElems hizugefügt
+                     *  Objekt das alle relevanten Informationen zu einem Element enthaelt.
+                     *  Wird dem Array dpElems hizugefuegt
                      */
                     var elemObj = {
                         id: elem.getAttribute("id"),
@@ -70,6 +66,7 @@
                         digits: parseInt(elem.getAttribute("data-digits"), 10),
                         factor: parseFloat(elem.getAttribute("data-factor")),
                         timestamp: elem.getAttribute("data-timestamp"),
+                        titletimestamp: elem.getAttribute("title-timestamp"),
                         css: elem.getAttribute("data-class"),
                         style: elem.getAttribute("data-style"),
                         relmax: elem.getAttribute("data-relative-max"),
@@ -86,7 +83,7 @@
                     }
 
                     /**
-                     *  Event-Handler hinzufügen
+                     *  Event-Handler hinzufuegen
                      */
                     this.addHandler(elem, elemObj);
 
@@ -94,7 +91,7 @@
             }
         },
         /**
-         * Fügt einen onClick oder onChange Event-Handler zu INPUT und SELECT Elementen hinzu
+         * Fuegt einen onClick oder onChange Event-Handler zu INPUT und SELECT Elementen hinzu
          *
          * @param elem
          * @param elemObj
@@ -194,6 +191,12 @@
                     }
                 }
             });
+            /*
+             * SG, 03.06.2016 - changed setInterval to setTimeout for less resources
+             */
+            setTimeout(function () {
+                _this.pollValues();
+            }, 3000);
         },
         /**
          *  Wert eines Elements updaten
@@ -203,6 +206,24 @@
          */
         updateElement: function (elemObj, val) {
             var elem = document.getElementById(elemObj.id);
+            /*
+             * SG, 08.02.2017 - set title-timestamp first, before setting val to val.val|ts
+             */
+            if (elemObj.titletimestamp) {
+                var title = elem.title || "";
+                // use in HTML:  title="static text&#13;"
+                if (title.lastIndexOf("\r\n") >= 0) {
+                    elem.title = title.substr(0, 1 + title.lastIndexOf("\r\n")) + val.ts;
+                } else if (title.lastIndexOf("\r") >= 0) {
+                    elem.title = title.substr(0, 1 + title.lastIndexOf("\r")) + val.ts;
+                } else if (title.lastIndexOf("\n") >= 0) {
+                    elem.title = title.substr(0, 1 + title.lastIndexOf("\n")) + val.ts;
+                } else if (title.lastIndexOf("@") >= 0) {
+                    elem.title = title.substr(0, 1 + title.lastIndexOf("@")) + val.ts;
+                } else {
+                    elem.title = val.ts;
+                }
+            }
             if (elemObj.timestamp) {
                 val = val.ts;
             } else {
@@ -276,7 +297,7 @@
             }
         },
         /**
-         * ajaxGet() - einen HTTP GET request durchführen
+         * ajaxGet() - einen HTTP GET request durchfuehren
          *
          * @param url - muss ein Fragezeichen beinhalten!
          * @param cb
@@ -298,7 +319,7 @@
     };
 
     /**
-     * Falls der Browser Array.indexOf nicht unterstützt wird diese Methode ergänzt
+     * Falls der Browser Array.indexOf nicht unterstuetzt wird diese Methode ergaenzt
      */
     if (!Array.indexOf){
         Array.prototype.indexOf = function(obj){
@@ -312,7 +333,7 @@
     }
 
     /**
-     *  XMLHttpRequest ergänzen für Internet Explorer
+     *  XMLHttpRequest ergaenzen fuer Internet Explorer
      */
     if (typeof XMLHttpRequest === "undefined") {
         XMLHttpRequest = function () {
@@ -324,14 +345,14 @@
             catch (e) {}
             try { return new ActiveXObject("Microsoft.XMLHTTP"); }
             catch (e) {}
-            alert("Dieser Browser unterstützt kein AJAX.");
+            alert("Dieser Browser unterst&uuml;tzt kein AJAX.");
             throw new Error("This browser does not support AJAX.");
         };
     }
 
     /**
-     *  JSON.parse ergänzen falls nicht vom Browser unterstützt
-     *  gekürzte Version von Douglas Crockfords json2.js - https://github.com/douglascrockford/JSON-js
+     *  JSON.parse ergaenzen falls nicht vom Browser unterstuetzt
+     *  gekuerzte Version von Douglas Crockfords json2.js - https://github.com/douglascrockford/JSON-js
      */
     if (typeof JSON !== 'object') {
         JSON = {};
