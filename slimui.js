@@ -154,6 +154,54 @@
                             break;
                     }
                     break;
+                // add onclick handler to pop up title for all others
+                default:
+                    if (elem.getAttribute("title") || elem.getAttribute("title-timestamp")) {
+                        elem.addEventListener(ieOn+"click", function (event) {
+                            that.showTitlePopup(elem);
+                        }, false);
+                    }
+                    break;
+            }
+        },
+        /**
+         * SG, 04.04.2017 - support title display on click/tap for mobile browsers
+         */
+        hideTitlePopup: function(parent) {
+            if (!parent) return false;
+            var popups = parent.getElementsByClassName('title-popup');
+            if (!popups || !popups[0]) return false;
+            parent.removeChild(popups[0]);
+            return true;
+        },
+        showTitlePopup: function(parent) {
+            _this = this;
+            if (parent && parent.title && !_this.hideTitlePopup(parent)) {
+                // do not add title, if removed by this click
+                var title = document.createElement('span');
+                title.setAttribute('class', 'title-popup');
+                // set style to match normal tooltips
+                title.style['position'] = 'absolute';
+                title.style['top'] = '1';
+                title.style['left'] = '1';
+                title.style['z-index'] = 1;
+                title.style['background'] = '#ffd';
+                title.style['border'] = '1px solid #333';
+                title.style['padding'] = '3px';
+                title.style['margin'] = '0px';
+                title.style['white-space'] = 'nowrap';
+                title.style['color'] = 'black';
+                title.style['font-family'] = 'sans-serif';
+                title.style['font-size'] = '11px';
+                title.style['font-style'] = 'normal';
+                title.style['font-weight'] = 100;
+                title.style['text-align'] = 'left';
+                title.style['line-height'] = '15px';
+                title.innerHTML = parent.title.replace("\n", "<br>");
+                parent.appendChild(title);
+                setTimeout(function(){
+                    _this.hideTitlePopup(parent);
+                }, 6000);
             }
         },
         /**
@@ -206,6 +254,8 @@
          */
         updateElement: function (elemObj, val) {
             var elem = document.getElementById(elemObj.id);
+            var popups = elem.getElementsByClassName('title-popup');
+            if (popups && popups[0]) return false; // do nothing while popup is displayed
             /*
              * SG, 08.02.2017 - set title-timestamp first, before setting val to val.val|ts
              */
