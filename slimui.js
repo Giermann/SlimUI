@@ -158,7 +158,7 @@
                 default:
                     if (elem.getAttribute("title") || elem.getAttribute("title-timestamp")) {
                         elem.addEventListener(ieOn+"click", function (event) {
-                            that.showTitlePopup(elem);
+                            that.showTitlePopup(elem, event);
                         }, false);
                     }
                     break;
@@ -174,16 +174,14 @@
             parent.removeChild(popups[0]);
             return true;
         },
-        showTitlePopup: function(parent) {
+        showTitlePopup: function(parent, event) {
             _this = this;
             if (parent && parent.title && !_this.hideTitlePopup(parent)) {
                 // do not add title, if removed by this click
                 var title = document.createElement('span');
                 title.setAttribute('class', 'title-popup');
                 // set style to match normal tooltips
-                title.style['position'] = 'absolute';
-                title.style['top'] = '1';
-                title.style['left'] = '1';
+                title.style['position'] = 'fixed';
                 title.style['z-index'] = 1;
                 title.style['background'] = '#ffd';
                 title.style['border'] = '1px solid #333';
@@ -199,6 +197,15 @@
                 title.style['line-height'] = '15px';
                 title.innerHTML = parent.title.replace("\n", "<br>");
                 parent.appendChild(title);
+                // position near click point
+                var y = event.pageY + 15;
+                if (y + 15 + title.offsetHeight > window.innerHeight) y = event.pageY - 15 - title.offsetHeight;
+                if (y < 1) y = 1;
+                title.style['top'] = y + 'px';
+                var x = event.pageX + 15;
+                if (x + 15 + title.offsetWidth > window.innerWidth) x = event.pageX - 15 - title.offsetWidth;
+                if (x < 1) x = 1;
+                title.style['left'] = x + 'px';
                 setTimeout(function(){
                     _this.hideTitlePopup(parent);
                 }, 6000);
